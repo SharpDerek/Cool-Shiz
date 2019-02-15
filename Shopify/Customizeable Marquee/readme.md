@@ -2,7 +2,7 @@
 Orginally built for https://thelumicharge.com/
 
 ## Files:
-- Schema.json:
+- Marquee.json:
   - Schema settings to inject into the settings_schema.json file on your Shopify theme
 
 - Marquee.liquid:
