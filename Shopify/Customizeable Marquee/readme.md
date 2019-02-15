@@ -1,5 +1,5 @@
 ### Customizeable Marquee
-A customizeable scrolling marquee orginally built for https://thelumicharge.com/
+A customizeable scrolling marquee originally built for https://thelumicharge.com/
 
 ## Features:
 - Customizeable text
