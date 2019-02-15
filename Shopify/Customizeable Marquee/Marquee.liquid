@@ -1,0 +1,5 @@
+  {% if settings.marquee_text != blank %}
+  	<div id="marquee" style="background: {{ settings.marquee_bg }}; white-space: nowrap; overflow:hidden;">
+      <h2 class="slide" style="color: {{ settings.marquee_color }}">{{ settings.marquee_text }}</h2>
+  	</div>
+  {% endif %}
