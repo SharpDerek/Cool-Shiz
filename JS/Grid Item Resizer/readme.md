@@ -18,7 +18,7 @@ Well fret no more, because now even YOU can have product grid items that always 
 ### HOW TO USE
 
 This script uses jQuery to find a set of elements of varying sizes, then wraps them in <divs> that are set to the height of the tallest element, then horizontally and vertically centering the contents within.
-Simply call the function uniformSize() on the elements, like so:
+Simply call `uniformSize()` on the elements, like so:
 ```javascript
 $('.woocommerce ul.products li.product a img').uniformSize();
 ```
