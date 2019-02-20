@@ -11,8 +11,8 @@ Well fret no more, because now even YOU can have product grid items that always 
 
 ### INSTALLATION INSTRUCTIONS
 
-1) Copy the <script> tag found in 'resizer-src.html' and paste it in the `<head>` element of your site.
-  2) In a custom .js file on your site or in some <script> tags before the closing `</body>` tag, paste the contents of 'resizer.js'.
+1) Copy the `<script>` tag found in 'resizer-src.html' and paste it in the `<head>` element of your site.
+  2) In a custom .js file on your site or in some `<script>` tags before the closing `</body>` tag, paste the contents of 'resizer.js'.
 3) Read further for help!
 
 ### HOW TO USE
@@ -23,7 +23,7 @@ Simply call `uniformSize()` on the elements, like so:
 $('.woocommerce ul.products li.product a img').uniformSize();
 ```
 
-This example is from a WordPress site with WooCommerce products. This drills down the grid of items until it finds the <img> tag in each item.
+This example is from a WordPress site with WooCommerce products. This drills down the grid of items until it finds the `<img>` tag in each item.
 
 Additionally, you can specify a responsive breakpoint at which to stop calling the function. This is helpful for product feeds that show only 1 product per row on mobile screens, in which case resizing the items would result in a lot of unnecessary white space.
 ```javascript
