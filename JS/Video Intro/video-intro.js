@@ -39,7 +39,6 @@ jQuery.fn.extend({
                         width: '100%'
                     })
                 }
-                console.log("THIS: " + thisAR + ", PARENT: " + parentAR);
             } else {
                 if (settings['hide_on_breakpoint'] == true) {
                     base.hide();
@@ -51,7 +50,9 @@ jQuery.fn.extend({
         }
 
         horizontalVerticalCenter();
-        horizontalVerticalCenter();
+        setTimeout(function(){
+            horizontalVerticalCenter();
+        },0);
         $(window).resize(function(){
             horizontalVerticalCenter();
         });
@@ -63,39 +64,43 @@ jQuery.fn.extend({
         $ = jQuery;
 
         var base = $(this);
-        base.hvCover({
-            parentWrap: settings['overlay'],
-            breakpoint: settings['breakpoint'],
-            hide_on_breakpoint: true
-        });
-        function overlayVideo() {
-            base.css({
-                position: 'fixed',
-                zIndex: 100000
+        base.on("loadeddata", function() {
+            base.hvCover({
+                parentWrap: settings['overlay'],
+                breakpoint: settings['breakpoint'],
+                hide_on_breakpoint: true
             });
+            function overlayVideo() {
+                base.css({
+                    position: 'fixed',
+                    zIndex: 100000
+                });
 
-        }
-        overlayVideo();
-        setTimeout(function(){
-            base.animate({
-                opacity:0
-            },
-            settings['fade_duration'],function() {
-                base.hide();
+            }
+            overlayVideo();
+            setTimeout(function(){
+                base.animate({
+                    opacity:0
+                },
+                settings['fade_duration'],function() {
+                    base.hide();
+                });
+            },base[0].duration * 1000);
+            $(window).resize(function(){
+               overlayVideo();
             });
-        },base[0].duration * 1000);
-        $(window).resize(function(){
-           overlayVideo();
         });
-
         return base;
     }
 });
 
 jQuery(document).ready(function($) {
-    $('#overlay-video').overlayVideo({
-        fade_duration: 500,
-        breakpoint: 992,
-        overlay: $(window)
-    });
+    if($('body').hasClass("home")) {
+        $('body').append($('<video id="overlay-video" autoplay muted><source src="https://dta0yqvfnusiq.cloudfront.net/egani36791820/2019/03/20190225-logo-animation-5c7ea3df608e0.mp4" type="video/mp4"></video'));
+        $('#overlay-video').overlayVideo({
+            fade_duration: 500,
+            breakpoint: 992,
+            overlay: $(window)
+        });
+    }
 });
