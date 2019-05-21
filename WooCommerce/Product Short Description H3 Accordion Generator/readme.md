@@ -4,6 +4,41 @@ PSDHAG For Short
 ## What it does
 Looks for `<h3>` tags in your WooCommerce products' short descriptions and turns them into clickable accordions on the single product page.
 
+### Example:
+```
+<p>Some Content</p>
+<h3>Accordion title</h3>
+<p>Accordion content 1</p>
+<p>Accordion content 2</p>
+<h3>Accordion title 2</h3>
+<p>Accordion content 1</p>
+<p>Accordion content 2</p>
+```
+Will become
+```
+<div class="accordion-section">
+<p>Some Content</p>
+<div class="accordion-item">
+<div class="accordion-title">
+<h3>Accordion title</h3>
+</div>
+<div class="accordion-content">
+<p>Accordion content 1</p>
+<p>Accordion content 2</p>
+</div>
+</div>
+<div class="accordion-item">
+<div class="accordion-title">
+<h3>Accordion title 2</h3>
+</div>
+<div class="accordion-content">
+<p>Accordion content 1</p>
+<p>Accordion content 2</p>
+</div>
+</div>
+</div>
+```
+
 ## Dependencies
 - WooCommerce
 - jQuery
