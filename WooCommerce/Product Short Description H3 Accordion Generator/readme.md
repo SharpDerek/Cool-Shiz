@@ -17,25 +17,25 @@ Looks for `<h3>` tags in your WooCommerce products' short descriptions and turns
 Will become
 ```
 <div class="accordion-section">
-<p>Some Content</p>
-<div class="accordion-item">
-<div class="accordion-title">
-<h3>Accordion title</h3>
-</div>
-<div class="accordion-content">
-<p>Accordion content 1</p>
-<p>Accordion content 2</p>
-</div>
-</div>
-<div class="accordion-item">
-<div class="accordion-title">
-<h3>Accordion title 2</h3>
-</div>
-<div class="accordion-content">
-<p>Accordion content 1</p>
-<p>Accordion content 2</p>
-</div>
-</div>
+  <p>Some Content</p>
+  <div class="accordion-item">
+    <div class="accordion-title">
+      <h3>Accordion title</h3>
+    </div>
+    <div class="accordion-content">
+      <p>Accordion content 1</p>
+      <p>Accordion content 2</p>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-title">
+      <h3>Accordion title 2</h3>
+    </div>
+    <div class="accordion-content">
+      <p>Accordion content 1</p>
+      <p>Accordion content 2</p>
+    </div>
+  </div>
 </div>
 ```
 
