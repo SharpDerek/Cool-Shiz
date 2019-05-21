@@ -1,18 +1,19 @@
 (function($) {
 
-	function DoAccordion() {
+	function doAccordion() {
 		var accIndex = 0;
 		$('.accordion-section').each(function() {
 			$(this).attr('acc-index',accIndex);
 			var itemIndex = 0;
 			$(this).find('.accordion-item').each(function() {
-				$(this).attr('acc-item-index',itemIndex);
-				$(this).attr('acc-parent-index',accIndex);
-				$(this).attr('acc-status','closed');
+				$(this)
+					.attr('acc-item-index',itemIndex)
+					.attr('acc-parent-index',accIndex)
+					.attr('acc-status','closed');
 				var thisItemIndex = itemIndex;
 				var thisParentIndex = accIndex;
 				$(this).find('.accordion-title').click(function() {
-					AccordionToggle(thisItemIndex,thisParentIndex);
+					accordionToggle(thisItemIndex,thisParentIndex);
 				});
 				itemIndex++;
 			});
@@ -20,30 +21,33 @@
 		});
 	}
 
-	function AccordionToggle(index, parentIndex) {
+	function accordionToggle(index, parentIndex) {
 		$('[acc-item-index][acc-parent-index]').each(function() {
 			var thisItemIndex = $(this).attr('acc-item-index');
 			var thisParentIndex = $(this).attr('acc-parent-index');
 			var thisItemStatus = $(this).attr('acc-status');
 			if (thisParentIndex == parentIndex) {
 				if (thisItemIndex == index) {
-					if (thisItemStatus == 'open') {
-						$(this).attr('acc-status','closed');
-						$(this).find('.accordion-content').slideUp();
-					} else {
-						$(this).attr('acc-status','open');
-						$(this).find('.accordion-content').slideDown();
-					}
+					accordionState($(this),thisItemStatus != 'open');
 				} else {
-					$(this).attr('acc-status','closed');
-					$(this).find('.accordion-content').slideUp();
+					accordionState($(this),false);
 				}
 			}
 		});
 	}
 
+	function accordionState(item, state) {
+		if (state) { 
+			item.attr('acc-status','open');
+			item.find('.accordion-content').slideDown();
+		} else {
+			item.attr('acc-status','closed');
+			item.find('.accordion-content').slideUp();
+		}
+	}
+
 	$(document).ready(function() {
-		DoAccordion();
+		doAccordion();
 	});
 
 })(jQuery);
