@@ -1,7 +1,7 @@
 jQuery.fn.extend({
     hvCover: function(settings = {'parentWrap':null,'breakpoint':0,'hide_on_breakpoint':false}) {
         $ = jQuery;
-        if (settings['parentWrap'] === null) {
+        if (typeof(settings['parentWrap']) == 'undefined') {
             settings['parentWrap'] = $(this).parent();
         }
         var base = $(this);
@@ -50,11 +50,17 @@ jQuery.fn.extend({
         }
 
         horizontalVerticalCenter();
-        setTimeout(function(){
-            horizontalVerticalCenter();
-        },0);
+      
+        base.on("loadeddata",function() {
+          horizontalVerticalCenter();
+        });
+      	var resizeDone;
         $(window).resize(function(){
             horizontalVerticalCenter();
+          clearTimeout(resizeDone);
+          resizeDone = setTimeout(function() {
+            horizontalVerticalCenter();
+          },100);
         });
 
         return base;
@@ -96,7 +102,7 @@ jQuery.fn.extend({
 
 jQuery(document).ready(function($) {
     if($('body').hasClass("home")) {
-        $('body').append($('<video id="overlay-video" autoplay muted><source src="https://dta0yqvfnusiq.cloudfront.net/egani36791820/2019/03/20190225-logo-animation-5c7ea3df608e0.mp4" type="video/mp4"></video'));
+        $('body').append($('<video id="overlay-video" autoplay muted><source src="---Some video source here---" type="video/mp4"></video'));
         $('#overlay-video').overlayVideo({
             fade_duration: 500,
             breakpoint: 992,
