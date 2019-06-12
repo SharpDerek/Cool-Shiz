@@ -100,6 +100,18 @@ jQuery.fn.extend({
     }
 });
 
+// just the horizontal and vertical scaling
+jQuery(document).ready(function($) {
+    if($('body').hasClass("home")) {
+        $('body').append($('<video id="overlay-video" autoplay muted><source src="---Some video source here---" type="video/mp4"></video'));
+        $('#overlay-video').hvCover({
+            breakpoint: 992,
+            hide_on_breakpoint: true
+        });
+    }
+});
+
+// full overlay
 jQuery(document).ready(function($) {
     if($('body').hasClass("home")) {
         $('body').append($('<video id="overlay-video" autoplay muted><source src="---Some video source here---" type="video/mp4"></video'));
