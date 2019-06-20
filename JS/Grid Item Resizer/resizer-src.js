@@ -45,7 +45,9 @@
 					});
 				}
 			}
-			resizeWrappers();
+			setTimeout(function() {
+				resizeWrappers();
+			},0);
 			$(window).resize(function() {
 				resizeWrappers();
 			});
