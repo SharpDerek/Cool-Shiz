@@ -1,3 +1,5 @@
+<!-- Grid Item Resizer -->
 <script>
 jQuery.fn.extend({uniformSize:function(i={breakpoint:0}){$=jQuery;var t=$(this),e=[];function h(){$(window).width()>i.breakpoint?(max_height=0,$.each(e,function(i,t){t.css("height","auto"),t.outerHeight()>max_height&&(max_height=t.outerHeight())}),$.each(e,function(i,t){t.css("height",max_height+"px")})):$.each(e,function(i,t){t.css("height","auto")})}return t.each(function(){$(this).css({width:"auto",margin:"auto"}),"max_height"in i&&$(this).css("max-height",i.max_height);$(this).parent();var t=$('<div class="size-wrapper"></div>'),h=$('<div class="wrapper-inner"></div>');t.css({display:"table",width:"100%"}),h.css({display:"table-cell","vertical-align":"middle",width:"100%"}),t.append(h),$(this).wrap(t),e.push($(this).parents(".size-wrapper"))}),h(),$(window).resize(function(){h()}),t}});
 </script>
+<!-- End Grid Item Resizer -->
