@@ -47,7 +47,7 @@
 			}
 			setTimeout(function() {
 				resizeWrappers();
-			},0);
+			},500);
 			$(window).resize(function() {
 				resizeWrappers();
 			});
