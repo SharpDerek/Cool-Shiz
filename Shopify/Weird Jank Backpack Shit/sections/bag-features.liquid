@@ -1,0 +1,235 @@
+<div class="interactable-section {{ section.settings.bg_image_css }}" {% unless section.settings.bg_image == blank %} style="background-image:url({{ section.settings.bg_image | img_url: 'master' }})" {% endunless %}>
+	<div class="page-width">
+      <div class="grid">
+        
+        {% capture text_area %}
+          <div class="excerpt-area text-center">
+            <h2>{{ section.settings.default_header }}</h2>
+			<div class="excerpt default-excerpt" call="default">
+<!--               <h3 class="excerpt-title">{{ section.settings.default_header }}</h3> -->
+              <div class="excerpt-body">{{ section.settings.default_body }}</div>
+            </div>
+            {% for block in section.blocks %}
+            	<div class="excerpt excerpt-{{ forloop.index }}" call="{{ forloop.index }}">
+                  {% if block.settings.excerpt_header == blank %}
+                  	{% assign header = block.settings.hover_header %}
+                  {% else %}
+                  	{% assign header = block.settings.excerpt_header %}
+                  {% endif %}
+                  
+                  {% if block.settings.excerpt_body == blank %}
+                  	{% assign body = block.settings.hover_body %}
+                  {% else %}
+                  	{% assign body = block.settings.excerpt_body %}
+                  {% endif %}
+              		<h3 class="excerpt-title">{{ header }}</h3>
+              		<div class="excerpt-body">{{ body }}</div>
+            	</div>
+            {% endfor %}
+          </div>
+        {% endcapture %}
+          
+        {% capture image_area %}
+          <div class="interact-area">
+            <div class="interact-image">
+            	<img src="{{ section.settings.interact_image | img_url: 'master' }}">
+              <div class="reticles">
+              	{% for block in section.blocks %}
+                	<div class="reticle-block reticle-block-{{ forloop.index }}">
+                      <div class="hover-reticle reticle-{{ forloop.index }}" callout="{{ forloop.index }}" style="bottom: {{ block.settings.y_pos }}; left: {{ block.settings.x_pos }}">
+                        {% assign pos_x = block.settings.x_pos | remove: "%" | plus: 0 %}
+                        {% assign pos_y = block.settings.y_pos | remove: "%" | plus: 0 %}
+                        <div class="reticle-text {% if pos_y > 47 %}inverted{% endif %} {% if pos_x < 33 %}left-align{% elsif pos_x > 66 %}right-align{% else %}center-align{% endif %}">
+                          {% if block.settings.hover_icon != blank %}<img class="hover-image" src="{{ block.settings.hover_icon | img_url: 'master' }}">{% endif %}
+                          <p class="hover-heading">{{ block.settings.hover_header }}</p>
+                          <p class="hover-body">{{ block.settings.hover_body }}</p>
+                          <p class="see-more">{{ section.settings.click_more_text }}</p>
+                        </div>
+                      </div>
+                	</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endcapture %}
+        
+        {% case section.settings.layout %}
+        	{% when 'text_left' %}
+        		{% assign grid_class = 'one-half' %}
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ text_area }}
+                </div>
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ image_area }}
+                </div>
+        	{% when 'text_right' %}
+        		{% assign grid_class = 'one-half' %}
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ image_area }}
+                </div>
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ text_area }}
+                </div>
+        	{% when 'text_top' %}
+        		{% assign grid_class = 'one-whole' %}
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ text_area }}
+                </div>
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ image_area }}
+                </div>
+        	{% when 'text_bottom' %}
+        		{% assign grid_class = 'one-whole' %}
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ image_area }}
+                </div>
+                <div class="grid__item medium-up--{{ grid_class }}">
+                  {{ text_area }}
+                </div>
+        {% endcase %}
+      </div>  
+  	</div>
+</div>
+
+{% schema %}
+  {
+    "name": "Interactable Section",
+    "settings": [
+		{
+			"type": "header",
+			"content": "Layout Settings"
+		},
+		{
+			"type": "select",
+			"id": "layout",
+			"label": "Layout",
+			"options": [
+				{
+					"group": "2 Columns",
+					"value": "text_left",
+					"label": "Text Left, Image Right"
+				},
+				{
+					"group": "2 Columns",
+					"value": "text_right",
+					"label": "Text Right, Image Left"
+				},
+				{
+					"group": "1 Column",
+					"value": "text_top",
+					"label": "Text Stacked above Image"
+				},
+				{
+					"group": "1 Column",
+					"value": "text_bottom",
+					"label": "Image Stacked above Text"
+				}
+			]
+		},
+		{
+			"type": "image_picker",
+			"id": "bg_image",
+			"label": "Background Image"
+		},
+		{
+			"type": "text",
+			"id": "bg_image_css",
+			"label": "Background CSS"
+		},
+		{
+			"type": "header",
+			"content": "INTERACTABLE IMAGE"
+		},
+		{
+			"type": "image_picker",
+			"id": "interact_image",
+			"label": "Interactable Image"
+		},
+		{
+			"type": "text",
+			"id": "click_more_text",
+			"label": "'Click to See More' text",
+			"default": "Click to see more"
+		},
+		{
+			"type": "text",
+			"id": "default_header",
+			"label": "Default Excerpt Header",
+			"default": "I'm interactable!"
+		},
+		{
+			"type": "textarea",
+			"id": "default_body",
+			"label": "Default Excerpt Body",
+			"default": "Hover and click on the product to see its features!"
+		}
+		
+	],
+	"blocks": [
+		{
+			"type": "image",
+			"name": "Info Block",
+			"settings": [
+				{
+                    "type": "header",
+                    "content": "Hover Settings"
+                },
+                {
+                    "type": "text",
+                    "id": "x_pos",
+                    "label": "Hover Reticle Position (X)",
+                    "info": "The Horizontal positioning of the hover reticle for this block. Use % for percentages.",
+					"default": "0%"
+                },
+                {
+                    "type": "text",
+                    "id": "y_pos",
+                    "label": "Hover Reticle Position (Y)",
+                    "info": "The Vertical positioning of the hover reticle for this block. Use % for percentages.",
+					"default": "0%"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "hover_icon",
+                    "label": "Hover Icon"
+                },
+                {
+                    "type": "text",
+                    "id": "hover_header",
+                    "label": "Hover Reticle Header",
+                    "info": "Header text of reticle, shown when hovered over with the cursor"
+                },
+                {
+                    "type": "textarea",
+                    "id": "hover_body",
+                    "label": "Hover Reticle Body",
+                    "info": "Body text of reticle, shown when hovered over with the cursor"
+                },
+				{
+                    "type": "header",
+                    "content": "Excerpt Settings"
+                },
+                {
+                    "type": "text",
+                    "id": "excerpt_header",
+                    "label": "Excerpt Header",
+                    "info": "Header text of the excerpt area (defaults to hover header if blank)"
+                },
+                {
+                    "type": "textarea",
+                    "id": "excerpt_body",
+                    "label": "Excerpt Body",
+                    "info": "Body text of the excerpt area, (defaults to hover body if blank)"
+                }
+			
+			]
+		}
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
