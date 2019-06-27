@@ -1,0 +1,119 @@
+/*Bag Features Section*/
+.interactable-section {
+  padding: 60px 0;
+  background-attachment:fixed;
+
+}
+.interact-area {
+  text-align:center;
+}
+.interact-image {
+  display:inline-block;
+  position:relative;
+}
+.interact-image .hover-reticle {
+  position:absolute;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  border: 3px solid white;
+  cursor: pointer;
+  background: rgba(0,0,0,0.5);
+}
+.interact-image .hover-reticle:hover {
+  border-color: #e6e6e6
+}
+.interact-image .hover-reticle:hover .reticle-text {
+  display:block; 
+}
+.hover-reticle .reticle-text {
+  /*width: 215px;*/
+  width: 230px;
+  position: absolute;
+  bottom: 30px;
+  /* left: -97px */
+  left: 50%;
+  transform:translate(-50%);
+  font-size: 14px;
+  text-align: center;
+  /*border-radius: 20px;*/
+  border-radius: 0;
+  background: rgba(50,50,50,0.85);
+  padding: 10px 10px 10px 10px;
+  z-index:1000;
+  display:none;
+}
+.hover-reticle .hover-image {
+  margin-bottom:10px; 
+}
+.hover-reticle .reticle-text.left-align {
+  left:50%;
+  transform: none;
+}
+.hover-reticle .reticle-text.left-align::after {
+  border-left-width: 0;
+  border-right-width:230px;
+}
+.hover-reticle .reticle-text.right-align {
+  left:auto;
+  right:50%;
+  transform: none;
+}
+.hover-reticle .reticle-text.right-align::after {
+  border-left-width: 230px;
+  border-right-width:0;
+}
+.hover-reticle .reticle-text.inverted {
+  bottom:auto;
+  /*padding-top:0;
+  padding-bottom:5px;*/
+  top: 30px;
+}
+.hover-reticle .reticle-text::after {
+  content: "";
+  border: 20px solid transparent;
+  border-top-color: rgba(50,50,50,0.85);
+/*   border-left-width: 87.5px;
+  border-right-width: 87.5px; */
+  border-left-width: 115px;
+  border-right-width: 115px;
+  position: absolute;
+/*   left: 20px;
+  right: 20px; */
+  left: 0;
+  right: 0;
+  bottom:-40px;
+}
+.hover-reticle .reticle-text.inverted::after {
+  border-top-color:transparent;
+  border-bottom-color:rgba(50,50,50,0.85);
+  bottom:auto;
+  top:-40px;
+}
+.hover-heading {
+  margin-bottom:5px;
+  color: white;
+  font-size:18px;
+  font-weight:600;
+  text-transform:uppercase;
+  line-height:1;
+}
+.hover-body {
+  margin-bottom:0;
+  line-height:1;
+  color: #ddd;
+}
+.see-more {
+  font-size: 12px;
+  margin-bottom:0;
+}
+
+.excerpt:not(.default-excerpt) {
+  display:none; 
+}
+
+.excerpt {
+  padding: 15px 20px;
+  margin-bottom: 30px;
+}
+/* End Bag Features Section*/
