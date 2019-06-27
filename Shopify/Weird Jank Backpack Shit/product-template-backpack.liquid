@@ -1,0 +1,579 @@
+<div id="ajax-accessory-wrap"></div>
+<div id="ajax-product-container">
+  <div class="product-template__container page-width" itemscope itemtype="http://schema.org/Product" id="ProductSection-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true">
+    <meta itemprop="name" content="{{ product.title }}">
+    <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+    <meta itemprop="image" content="{{ product.featured_image.src | img_url: '800x' }}">
+
+    {% comment %}
+      Get first variant, or deep linked one
+    {% endcomment %}
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+    {%- assign product_image_zoom_size = '1024x1024' -%}
+    {%- assign product_image_scale = '2' -%}
+    {%- assign enable_zoom = section.settings.enable_zoom -%}
+
+    {% case section.settings.image_size %}
+      {% when 'small' %}
+        {%- assign product_image_width = 'medium-up--one-third' -%}
+        {%- assign product_description_width = 'medium-up--two-thirds' -%}
+        {%- assign product_thumbnail_width = 'medium-up--one-third' -%}
+        {%- assign height = 345 -%}
+      {% when 'medium' %}
+        {%- assign product_image_width = 'medium-up--one-half' -%}
+        {%- assign product_description_width = 'medium-up--one-half' -%}
+        {%- assign product_thumbnail_width = 'medium-up--one-quarter' -%}
+        {%- assign height = 530 -%}
+      {% when 'large' %}
+        {%- assign product_image_width = 'medium-up--two-thirds' -%}
+        {%- assign product_description_width = 'medium-up--one-third' -%}
+        {%- assign product_thumbnail_width = 'medium-up--one-fifth' -%}
+        {%- assign height = 720 -%}
+      {% when 'full' %}
+        {%- assign product_image_width = '' -%}
+        {%- assign product_description_width = '' -%}
+        {%- assign product_thumbnail_width = 'medium-up--one-eighth' -%}
+        {%- assign height = 1090 -%}
+        {%- assign enable_zoom = false -%}
+    {% endcase %}
+
+    <div class="grid product-single">
+        {% if product.images.size > 1 %}
+          {% if product.images.size > 3 %}
+            {%- assign enable_thumbnail_slides = true -%}
+          {% endif %}
+        {% endif %}
+      <div class="grid__item product-single__photos {{ product_image_width }}{% if section.settings.image_size == 'full' %} product-single__photos--full{% endif %}">
+        {%- assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image -%}
+        <div id="product-carousel-wrap">
+          <ul id="product-carousel">
+            {% for image in product.images %}
+            <li class="carousel-item-" carousel-element="{{ image.alt | remove: " front" | remove: "front" }}">
+              <a href="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"
+                 class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+                 data-thumbnail-id="{{ image.id }}"
+                 {% if enable_zoom %}data-zoom="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+                <img class="product-single__thumbnail-image" src="{{ image.src | img_url: '110x110', scale: 2 }}" alt="{{ image.alt | escape }}">
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% for image in product.images %}
+          {% capture img_id %}FeaturedImage-{{ section.id }}-{{ image.id }}{% endcapture %}
+          {% capture img_class %}product-featured-img{% endcapture %}
+          {% capture zoom_img_id %}FeaturedImageZoom-{{ section.id }}-{{ image.id }}{% endcapture %}
+          {% capture img_wrapper_id %}{{ zoom_img_id }}-wrapper{% endcapture %}
+          {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+          {% include 'image-style' with small_style: true, width: height, height: height, wrapper_id: img_wrapper_id, img_id: img_id %}
+          <div id="{{ img_wrapper_id }}" class="product-single__photo-wrapper js">
+            <div id="{{ zoom_img_id }}" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;" class="product-single__photo{% if enable_zoom %} js-zoom-enabled{% endif %}{% if product.images.size > 1 %} product-single__photo--has-thumbnails{% endif %}{% unless featured_image == image %} hide{% endunless %}" data-image-id="{{ image.id }}"{% if enable_zoom %} data-zoom="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+              <img id="{{ img_id }}"
+                   class="feature-row__image {{ img_class }} lazyload{% unless featured_image == image %} lazypreload{% endunless %}"
+                   src="{{ image | img_url: '300x300' }}"
+                   data-src="{{ img_url }}"
+                   data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                   data-aspectratio="{{ image.aspect_ratio }}"
+                   data-sizes="auto"
+                   alt="{{ image.alt | escape }}">
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+          <div class="thumbnails-wrapper{% if enable_thumbnail_slides == true %} thumbnails-slider--active{% endif %}">
+            {% if enable_thumbnail_slides == true %}
+              <button type="button" class="{{ section.settings.buttonstyle }} btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__prev thumbnails-slider__prev--{{ section.id }}">
+                {% include 'icon-chevron-left' %}
+                <span class="icon__fallback-text">{{ 'sections.slideshow.previous_slide' | t }}</span>
+              </button>
+            {% endif %}
+                <ul class="grid grid--uniform product-single__thumbnails product-single__thumbnails-{{ section.id }}">
+                  {% for image in product.images %}
+                  {% if image.alt contains 'front' %}
+                    <li class="grid__item {{ product_thumbnail_width }} product-single__thumbnails-item js">
+                      <a href="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"
+                         class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+                         data-thumbnail-id="{{ image.id }}"
+                         {% if enable_zoom %}data-zoom="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+                           <img class="product-single__thumbnail-image" src="{{ image.src | img_url: '110x110', scale: 2 }}" alt="{{ image.alt | escape }}">
+                      </a>
+                    </li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+            {% if enable_thumbnail_slides == true %}
+              <button type="button" class="{{ section.settings.buttonstyle }} btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__next thumbnails-slider__next--{{ section.id }}">
+                {% include 'icon-chevron-right' %}
+                <span class="icon__fallback-text">{{ 'sections.slideshow.next_slide' | t }}</span>
+              </button>
+            {% endif %}
+          </div>
+
+        <noscript>
+          {% capture product_image_size %}{{ height }}x{% endcapture %}
+          <img src="{{ featured_image | img_url: product_image_size, scale: product_image_scale }}" alt="{{ featured_image.alt }}" id="FeaturedImage-{{ section.id }}" class="product-featured-img" style="max-width: {{ height }}px;">
+        </noscript>
+
+
+      </div>
+
+      <div class="grid__item {{ product_description_width }}">
+        <div class="product-single__meta">
+
+          <h1 itemprop="name" class="product-single__title">{{ product.title }}</h1>
+
+          {% if section.settings.show_vendor %}
+            <p itemprop="brand" class="product-single__vendor">{{ product.vendor }}</p>
+          {% endif %}
+
+          <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+
+            <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+
+            <p class="product-single__price product-single__price-{{ section.id }}{% unless current_variant.available %} product-price--sold-out{% endunless %}">
+              {% if current_variant.compare_at_price > current_variant.price %}
+                  <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                  <s id="ComparePrice-{{ section.id }}">{{ current_variant.compare_at_price | money }}</s>
+                  <span class="product-price__price product-price__price-{{ section.id }} product-price__sale product-price__sale--single">
+                    <span id="ProductPrice-{{ section.id }}"
+                      itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+                      {{ current_variant.price | money }}
+                    </span>
+                    <span class="product-price__sale-label product-price__sale-label-{{ section.id }}">{{ 'products.product.on_sale' | t }}</span>
+                  </span>
+              {% else %}
+                <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                <s id="ComparePrice-{{ section.id }}" class="hide">{{ current_variant.compare_at_price | money }}</s>
+                <span class="product-price__price product-price__price-{{ section.id }}">
+                  <span id="ProductPrice-{{ section.id }}"
+                    itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+                    {{ current_variant.price | money }}
+                  </span>
+                  <span class="product-price__sale-label product-price__sale-label-{{ section.id }} hide">{{ 'products.product.on_sale' | t }}</span>
+                </span>
+              {% endif %}
+            </p>
+
+            <form action="/cart/add" method="post" enctype="multipart/form-data" class="product-form product-form-{{ section.id }}{% unless section.settings.show_variant_labels %} product-form--hide-variant-labels{% endunless %}" data-section="{{ section.id }}">
+
+              {% unless product.options.size == 1 and product.variants[0].title == 'Default Title' %}         
+              {% for option in product.options_with_values %}
+                      <div class="selector-wrapper js product-form__item">
+                        <label {% if option.name == 'default' %}class="label--hidden" {% endif %}for="SingleOptionSelector-{{ forloop.index0 }}">
+                          {{ option.name }}
+                        </label>
+                        <select class="single-option-selector single-option-selector-{{ section.id }} product-form__input" id="SingleOptionSelector-{{ forloop.index0 }}" data-index="option{{ forloop.index }}">
+                          {% for value in option.values %}
+                            <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endfor %}
+                  {% if section.settings.show_swatches %}
+                    {% for option in product.options %}
+                      {% include 'swatch' with option %}
+                    {% endfor %}
+                  {% else %}
+
+                  {% endif %}
+
+              {% endunless %}
+
+              <select name="id" id="ProductSelect-{{ section.id }}" data-section="{{ section.id }}" class="product-form__variants no-js">
+                {% for variant in product.variants %}
+                  {% if variant.available %}
+                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                      {{ variant.title }}
+                    </option>
+                  {% else %}
+                    <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+
+              <div class="product-form__item product-form__item--submit">
+
+                {% if section.settings.show_quantity_selector %}
+                <div class="product-form__item product-form__item--quantity">
+                  <label for="Quantity">{{ 'products.product.quantity' | t }}</label>
+                  <input type="number" id="Quantity" name="quantity" value="1" min="1" class="product-form__input" pattern="[0-9]*">
+                </div>
+              {% endif %}
+
+                <button type="submit" name="add" id="AddToCart-{{ section.id }}" {% unless current_variant.available %}disabled="disabled"{% endunless %} class="{{ section.settings.buttonstyle }} product-form__cart-submit{% if product.options.size == 1 and product.variants[0].title == 'Default Title' %} product-form__cart-submit--small{% endif %}">
+                  <span id="AddToCartText-{{ section.id }}">
+                    {% unless current_variant.available %}
+                      {{ 'products.product.sold_out' | t }}
+                    {% else %}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {% endunless %}
+                  </span>
+                </button>
+              </div>
+            </form>
+          {% if section.settings.show_share_buttons %}
+            {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+          {% endif %}
+
+          </div>
+
+          {% if section.settings.show_trust_badge %}
+              {% include 'product-trust-badges' %}
+          {% endif %}
+          <div class="accessories-section">
+            {% assign query = product.handle | prepend: 'base_product=' %}
+              {% for accessory in collections['accessories'].products %}
+                  {% include 'accessories-item', query: query  %}
+              {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% if section.settings.show_related_products == true %}
+
+      {% include 'related-products' %}
+
+    {% endif %}
+            <div class="product-single__description rte" itemprop="description">
+            {{ product.description }}
+          </div>
+  </div>
+
+  {% if collection %}
+    <div class="text-center return-link-wrapper">
+      <a href="{{ collection.url }}" class="{{ section.settings.buttonstyle }} btn--secondary btn--has-icon-before return-link">
+        {% include 'icon-arrow-left' %}
+        {{ 'products.product.back_to_collection' | t: title: collection.title }}
+      </a>
+    </div>
+  {% endif %}
+
+
+  {% unless product == empty %}
+    <script type="application/json" id="ProductJson-{{ section.id }}">
+      {{ product | json }}
+    </script>
+  {% endunless %}
+
+  <script>
+    // Shopify Product form requirement
+    selectCallback = function(variant, selector) {
+      var $product = $('#product-' + selector.product.id);    
+
+      jQuery(function() {
+        jQuery('.swatch :radio').change(function() {
+          var optionIndex = jQuery(this).closest('.swatch').attr('data-option-index');
+          var optionValue = jQuery(this).val();
+          jQuery(this)
+          .closest('form')
+          .find('.single-option-selector')
+          .eq(optionIndex)
+          .val(optionValue)
+          .trigger('change');
+        });
+      }); 
+
+      if (variant && variant.available == true) {
+        if(variant.compare_at_price > variant.price){
+          $('.was', $product).html(Shopify.formatMoney(variant.compare_at_price, $('form', $product).data('money-format')))        
+        } else {
+          $('.was', $product).text('')
+        } 
+        $('.product-price', $product).html(Shopify.formatMoney(variant.price, $('form', $product).data('money-format'))) 
+        $('.add', $product).removeClass('disabled').removeAttr('disabled').val('{{ 'products.product.add_to_cart' | t }}');
+      } else {
+        var message = variant ? "{{ 'products.product.sold_out' | t }}" : "{{ 'products.product.sold_out' | t }}";
+        $('.was', $product).text('')
+        $('.product-price', $product).text(message);
+        $('.add', $product).addClass('disabled').attr('disabled', 'disabled').val(message); 
+      } 
+
+
+      if (variant && variant.featured_image) {
+        var original_image = $("#product-main-image"), new_image = variant.featured_image;
+        Shopify.Image.switchImage(new_image, original_image[0], function (new_image_src, original_image, element) {
+
+          $(element).parents('a').attr('href', new_image_src);
+          $(element).attr('src', new_image_src);   
+          $(element).attr('data-image', new_image_src);   
+          $(element).attr('data-zoom-image',new_image_src);
+
+          $('.thumbnail[data-image-id="' + variant.featured_image.id + '"]').trigger('click');
+
+        });
+      }
+
+    }; 
+  </script>
+
+  {% if section.settings.show_swatches %}
+
+    {% if product.variants.size > 1 or product.options.size > 1 %}
+      <script type="text/javascript">
+
+        var selectCallback = function(variant, selector) {
+
+       // BEGIN SWATCHES
+        if (variant) {
+          var form = jQuery('#' + selector.domIdPrefix).closest('form');
+          for (var i=0,length=variant.options.length; i<length; i++) {
+            var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+            if (radioButton.size()) {
+              radioButton.get(0).checked = true;
+            }
+          }
+        }
+        // END SWATCHES
+        };
+
+      </script>
+
+
+
+    {% endif %}
+
+
+  {% endif %}
+
+</div>
+
+<script>
+
+  jQuery(document).ready(function($) {
+    function loadPage() {
+      var accessoryLinks = $('.accessory-link');
+      var accessoryWrap = $('#ajax-accessory-wrap');
+      var prodContainer = $('#ajax-product-container');
+      var prodHandle = '{{ product.handle }}';
+      var prodTitle = '{{ product.title }}';
+      var prodContent = '';
+      accessoryWrap.hide();
+      accessoryLinks.each(function() {
+        $(this).click(function(event) {
+          event.preventDefault();
+          prodContent = prodContainer.html();
+          prodContainer.slideUp(400, function(){$(this).empty()});
+          var thisUrl = $(this).attr("href");
+          $.ajax({
+            url: thisUrl,
+            type: 'GET',
+            success: function(data) {
+              accessoryWrap.html($(data).find('#ajax-accessory-container'));
+              accessoryWrap.find('.product-single__thumbnails-item.js').remove();
+              accessoryWrap.find('[carousel-element]').each(function() {
+                if ($(this).attr("carousel-element") === prodHandle ) {
+                    $(this).show();
+                  } else {
+                    $(this).remove(); 
+                  }
+              });
+              var themeJS_src = $('script[src*="theme.js"]').attr('src');
+              $('script[src*="theme.js"]').remove();
+              $('head').append($('<script />', {
+                src: themeJS_src,
+                class: 'new-theme-js'
+              }));
+              accessoryWrap.find('#accessory-back').find('span').text(prodTitle);
+              $('.product-single__photo-wrapper.js').hide();
+              accessoryWrap.slideDown();
+              accessoryWrap.find('#accessory-back').click(function(thisevent) {
+                thisevent.preventDefault();
+                accessoryWrap.slideUp(400, function () {
+                  $(this).empty();
+                  prodContainer.html(prodContent);
+                  prodContainer.slideDown(400, function(){loadPage()});
+                });
+              });
+            }
+          });
+        });
+      });
+    }
+    
+    loadPage();
+  });
+
+</script>
+
+
+{% schema %}
+  {
+    "name": "Product pages",
+    "settings": [
+	 {
+        "type": "header",
+        "content": "Product Image"
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "full",
+            "label": "Full-width"
+          }
+        ],
+        "default": "medium"
+      },
+	  {
+        "type": "checkbox",
+        "id": "enable_zoom",
+        "label": "Enable image zoom",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "buttonstyle",
+        "label": "Button Style",
+        "default": "btn2",
+        "options": [
+          {
+            "value": "btn",
+            "label": "Button 1"
+          },
+          {
+            "value": "btn2",
+            "label": "Button 2"
+          }
+        ]
+      },
+	  {
+        "type": "header",
+        "content": "Product Details"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show quantity selector",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_variant_labels",
+        "label": "Show variant labels",
+        "default": true
+      },
+	  {
+        "type": "checkbox",
+        "id": "show_swatches",
+        "label": "Show swatches",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": false
+      },   
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+	  {
+        "type": "header",
+        "content": "Related Products"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_related_products",
+        "label": "Show Related Products By Tag",
+        "default": false
+      },
+      {
+      "id": "related_title",
+      "type": "text",
+      "label": "Related Products Title",
+      "default": "Other fine products"
+      },
+	  {
+        "type": "select",
+        "id": "number_related_products",
+        "label": "Number of Related Products",
+        "default": "4",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+		  {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          }
+        ]
+      },
+	  {
+        "type": "header",
+        "content": "Trust Badges"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_trust_badge",
+        "label": "Show Trust Badge",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Amount of Trust Badges",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "image_picker",
+        "id": "trust_badge1",
+        "label": "Trust Badge Image 1",
+        "info": "Will be scaled down to 150px x 150px and must be a png"
+      },
+	  {
+        "type": "image_picker",
+        "id": "trust_badge2",
+        "label": "Trust Badge Image 2",
+        "info": "Will be scaled down to 150px x 150px and must be a png"
+      },
+	  {
+        "type": "image_picker",
+        "id": "trust_badge3",
+        "label": "Trust Badge Image 3",
+        "info": "Will be scaled down to 150px x 150px and must be a png"
+      },
+	  {
+        "type": "image_picker",
+        "id": "trust_badge4",
+        "label": "Trust Badge Image 4",
+        "info": "Will be scaled down to 150px x 150px and must be a png"
+      }
+    ]
+  }
+{% endschema %}
