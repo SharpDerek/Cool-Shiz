@@ -1,0 +1,36 @@
+<div class="grid-view-item{% unless accessory.available %} product-price--sold-out grid-view-item--sold-out{% endunless %}">
+  <a class="accessory-link grid-view-item__link grid-view-item__image-container" href="{{ accessory.url | within: collection }}?{{ query }}">
+    {% capture img_id %}ProductCardImage-{{ section.id }}-{{ accessory.id }}{% endcapture %}
+    {% capture wrapper_id %}ProductCardImageWrapper-{{ section.id }}-{{ accessory.id }}{% endcapture %}
+    {%- assign img_url = accessory.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    {% unless accessory.featured_image == blank %}
+      {% include 'image-style' with image: accessory.featured_image, width: 'auto', height: 200, small_style: true, wrapper_id: wrapper_id, img_id: img_id %}
+    {% endunless %}
+
+    <div id="{{ wrapper_id }}" class="grid-view-item__image-wrapper js">
+      <div style="padding-top:{% unless accessory.featured_image == blank %}{{ 1 | divided_by: accessory.featured_image.aspect_ratio | times: 100}}%{% else %}100%{% endunless %};">
+        <img id="{{ img_id }}"
+             class="grid-view-item__image lazyload"
+             src="{{ accessory.featured_image | img_url: '300x300' }}"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ accessory.featured_image.aspect_ratio }}"
+             data-sizes="auto"
+             alt="{{ accessory.featured_image.alt | escape }}">
+      </div>
+    </div>
+
+    <noscript>
+      {% capture image_size %}{{ max_height }}x{{ max_height }}{% endcapture %}
+      <img class="grid-view-item__image" src="{{ accessory.featured_image.src | img_url: image_size, scale: 2 }}" alt="{{ accessory.featured_image.alt }}" style="max-width: {{ max_height | times: accessory.featured_image.aspect_ratio }}px;">
+    </noscript>
+
+    <div class="grid-view-item__title">{{ accessory.title }}</div>
+    {% if section.settings.show_vendor %}
+      <div class="grid-view-item__vendor">{{ accessory.vendor }}</div>
+    {% endif %}
+    <div class="grid-view-item__meta">
+      {% include 'product-price', product: accessory %}
+    </div>
+  </a>
+</div>
