@@ -1,0 +1,40 @@
+{% assign open_tag = "<h3>" %}
+{% assign close_tag = "</h3>" %}
+
+{% assign content = product.description %}
+
+{% if content contains open_tag %}
+
+  {% assign content_array = content | split : open_tag %}
+
+	<ul class="tabs">
+      {% for content_block in content_array %}
+      	{% unless content_block == blank %}
+          <li>
+            {% assign block_array = content_block | split: close_tag %}
+            {% assign tab_title = block_array[0] %}
+            <a href="#tab{{ forloop.index0 }}" {% if forloop.index0 == 1 %}class="active"{% endif %}>
+                {{ tab_title }}
+            </a>
+          </li>
+      	{% endunless %}
+      {% endfor %}
+    </ul>
+	<ul class="tabs-content">
+      {% for content_block in content_array %}
+      	{% unless content_block == blank %}
+          <li id="tab{{ forloop.index0 }}" {% if forloop.index0 == 1 %}style="display:block"{% endif %}>
+            {% assign block_array = content_block | split: close_tag %}
+            {% assign tab_content = block_array[1] %}
+            {{ tab_content }}
+          </li>
+        {% endunless %}
+      {% endfor %}
+	</ul>
+{% else %}
+	
+	<div class="content">
+    	{{ content }}  
+	</div>
+
+{% endif %}
