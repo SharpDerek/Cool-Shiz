@@ -20,6 +20,7 @@ jQuery.fn.extend({
             left: trygetvalue(key, 'rightvalue', 0, base.width()),
             width: trygetvalue(key, 'leftvalue', 0, base.width()) - trygetvalue(key, 'rightvalue', 0, base.width()),
             zIndex: 0,
+            borderRadius: '50px',
             background: settings.values[key].color
           })
         }
@@ -76,7 +77,7 @@ jQuery.fn.extend({
           });
         });
 
-        $(document).on('touchend mouseup', function() {
+        $(document).on('touchend mouseup mouseleave', function() {
           closeDragElement();
         });
         $(document).on('touchmove mousemove', function() {
