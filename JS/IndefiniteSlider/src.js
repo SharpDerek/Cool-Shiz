@@ -52,7 +52,7 @@ jQuery.fn.extend({
         fallback = max;
         break;
       }
-      let query = $(`.slider-handle[${valuetype}="${value}"]`) 
+      let query = base.find(`.slider-handle[${valuetype}="${value}"]`);
       if (query.length <= 0) {
         return fallback;
       } else {
