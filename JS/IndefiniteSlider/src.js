@@ -4,8 +4,13 @@ jQuery.fn.extend({
     let base = $(this);
     let output = {};
     let interactions = [];
+    let isVisible = false;
 
     function colorSlider() {
+      isVisible = base.is(":visible");
+      if (!isVisible) {
+        return;
+      }
       if (settings.hasOwnProperty('values')) {
         for (const key of Object.keys(settings.values)) {
           let colornode = base.find(`.slider-color-node[color-value="${key}"]`);
@@ -52,7 +57,7 @@ jQuery.fn.extend({
         fallback = max;
         break;
       }
-      let query = base.find(`.slider-handle[${valuetype}="${value}"]`);
+      let query = $(`.slider-handle[${valuetype}="${value}"]`) 
       if (query.length <= 0) {
         return fallback;
       } else {
@@ -188,6 +193,9 @@ jQuery.fn.extend({
       $(window).on('resize', function() {
         colorSlider();
       });
+      setTimeout(function() {
+        colorSlider();
+      }, 100);
       return output;
     }
     return new Error("No values defined");
