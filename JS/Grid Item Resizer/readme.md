@@ -11,8 +11,8 @@ Well fret no more, because now even YOU can have product grid items that always 
 
 ### INSTALLATION INSTRUCTIONS
 
-1) Copy the `<script>` tag found in 'resizer-src.html' and paste it in the `<head>` element of your site.
-  2) In a custom .js file on your site or in some `<script>` tags before the closing `</body>` tag, paste the contents of 'resizer.js'.
+1) In the `<head>` element of your site, paste this script: `<script src="https://madwire-assets.s3.us-east-2.amazonaws.com/js/grid-item-resizer.js"></script>`.
+2) In a custom .js file on your site or in some `<script>` tags before the closing `</body>` tag, paste the contents of 'resizer.js'.
 3) Read further for help!
 
 ### HOW TO USE
